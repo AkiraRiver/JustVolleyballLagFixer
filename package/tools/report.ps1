@@ -6,7 +6,7 @@ Remove-Item $out -Recurse -Force
 New-Item -ItemType Directory -Force $out | Out-Null
 
 # this tool's own logs and the files it wrote
-foreach ($f in "JV_Optim_log.txt", "launch_log.txt") {
+foreach ($f in "JV_Optim_log.txt", "launch_log.txt", "compat_mode.txt") {
     Copy-Item (Join-Path $Here $f) $out
 }
 foreach ($g in "game_full", "game_demo") {

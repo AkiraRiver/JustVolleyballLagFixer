@@ -34,7 +34,7 @@ Double-click `LIGHT_STAGES.bat`, change `true` to `false` for what you want to k
 
 - **Crashes or weird graphics:** double-click `SAFE_MODE.bat`, then play again with `LAUNCH_GAME.bat`.
 - **Still broken?** Double-click `MAKE_REPORT.bat` and send the `JV_report.zip` it puts on your Desktop.
-- **Game only works in compatibility mode?** Set it on the Steam game (right-click `volleyball.exe` → *Properties* → *Compatibility*), then run `JV_Optim.exe` again: it copies the same setting to the optimised game.
+- **Game only works in compatibility mode?** Double-click `COMPAT_MODE.bat` and pick the same mode as on the Steam game. `LAUNCH_GAME.bat` uses it from then on. (`JV_Optim.exe` also copies the Steam game's mode by itself when it finds one.)
 - Don't run the Steam game and this one **at the same time**.
 
 ---

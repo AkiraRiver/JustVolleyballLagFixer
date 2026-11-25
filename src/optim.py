@@ -164,7 +164,9 @@ def copy_compat_mode(src_exe, out_exe):
     except ImportError:
         return
     want = os.path.normcase(os.path.abspath(src_exe))
+    name = os.path.basename(want)
     value = None
+    loose = None  # same exe name in a "just volleyball" folder (other drive, shortcut...)
     for hive in (winreg.HKEY_CURRENT_USER, winreg.HKEY_LOCAL_MACHINE):  # per user wins
         try:
             with winreg.OpenKey(hive, LAYERS_KEY) as k:
@@ -175,10 +177,19 @@ def copy_compat_mode(src_exe, out_exe):
                     except OSError:
                         break
                     i += 1
-                    if os.path.normcase(os.path.abspath(exe)) == want and value is None:
+                    here = os.path.normcase(os.path.abspath(exe))
+                    if here == want and value is None:
                         value = val
+                    elif loose is None and os.path.basename(here) == name \
+                            and os.path.basename(os.path.dirname(here)).startswith("just volleyball"):
+                        loose = val
         except OSError:
             pass
+    if value is None and loose:
+        value = loose
+        log_only("compatibility mode found on another copy of %s, used anyway" % name)
+    if value is None:
+        print("  no compatibility mode set on the Steam game (%s)" % src_exe)
     try:
         with winreg.CreateKeyEx(winreg.HKEY_CURRENT_USER, LAYERS_KEY, 0, winreg.KEY_SET_VALUE) as k:
             if value:
