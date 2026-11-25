@@ -1,0 +1,10 @@
+build/
+dist/
+release/
+__pycache__/
+*.zip
+_work/
+game_full/
+game_demo/
+tools/gdre/
+key.txt
