@@ -138,7 +138,7 @@ def patch_tree(src_root, patches, new_files, files_dir, fresh=True):
             if not os.path.exists(path):
                 die("script not found in the game: " + f)
             texts[f] = _read(path)
-            if fresh and "[mod]" in texts[f]:
+            if fresh and "[lag fixer]" in texts[f]:
                 die(f + " is already patched")
         hits = list(re.finditer(_loose(p["find"]), texts[f]))
         if not hits and p.get("optional"):
@@ -178,17 +178,28 @@ def file_sha(path):
     return h.hexdigest()
 
 
-def write_override():
+def write_override(threaded=True):
+    """override.cfg next to the exe (Godot reads it at startup). No render
+    thread when the player runs OpenGL or left a no_render_thread.txt file."""
     path = os.path.join(GAME_DIR, "override.cfg")
-    if os.path.exists(path + ".off"):
-        return  # the user turned it off: keep it off
+    text = OVERRIDE_BASE
+    if threaded and not os.path.exists(os.path.join(GAME_DIR, "no_render_thread.txt")):
+        text += OVERRIDE_THREAD
     with open(path, "w", encoding="utf-8", newline="\r\n") as fh:
-        fh.write(OVERRIDE)
+        fh.write(text)
 
 
-OVERRIDE = """; [mod] engine settings for the modded exe (Godot reads override.cfg next to the exe)
+OVERRIDE_BASE = """; [lag fixer] engine settings for this copy (Godot reads override.cfg next to the exe)
+; the game log is written line by line, so it is complete even after a crash
+[application]
+
+run/flush_stdout_on_print=true
+"""
+
+OVERRIDE_THREAD = """
 ; rendering on its own thread: ~+30% fps when hosting 4v4 (Godot still calls it experimental).
-; Delete this file to go back to the game's default if you ever see crashes or glitches.
+; Crashes or glitches? create an empty file no_render_thread.txt in this folder
+; and run JV_Optim.exe again (or delete the 3 lines below).
 [rendering]
 
 driver/threads/thread_model=2

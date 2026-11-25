@@ -15,7 +15,7 @@ Download **`JustVolleyball_Optim.zip`** under *Assets*.
    - Wait for **"ready"**, then press Enter. It finds the game by itself.
 3. **Double-click `LAUNCH_GAME.bat`** to play (Steam must be open).
 
-**Game updated?** Just double-click `JV_Optim.exe` again. (and ping me on discord akira2549 if needed)
+**Game updated?** Just double-click `JV_Optim.exe` again (it rebuilds everything from your Steam game). (and ping me on discord akira2549 if needed)
 
 **Back to normal?** Launch the game from Steam as usual. Your Steam game is never changed.
 
@@ -32,7 +32,8 @@ Double-click `LIGHT_STAGES.bat`, change `true` to `false` for what you want to k
 
 ## Problems?
 
-- **Crashes or weird graphics:** delete `override.cfg` in the `game_full` folder.
+- **Crashes or weird graphics:** double-click `SAFE_MODE.bat`, then play again with `LAUNCH_GAME.bat`.
+- **Still broken?** Double-click `MAKE_REPORT.bat` and send the `JV_report.zip` it puts on your Desktop.
 - Don't run the Steam game and this one **at the same time**.
 
 ---

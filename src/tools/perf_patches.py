@@ -1,4 +1,4 @@
-# Loading-time fixes. Applied with the mod (patches.py), same matching rules.
+# Performance patches. Each entry swaps one snippet of a decompiled game script.
 
 from jvpatch import P
 

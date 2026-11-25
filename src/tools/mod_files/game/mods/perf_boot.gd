@@ -1,6 +1,6 @@
 extends RefCounted
 
-# [mod/perf] started from the intro splash: loads on worker threads what the
+# [lag fixer] started from the intro splash: loads on worker threads what the
 # title, the menu and every character build would otherwise load one by one
 # on the main thread (scenes, hair models, face art). Later load() calls then
 # get the cached resource instead of blocking.
@@ -13,10 +13,27 @@ const SCENES: = [
 
 static var _started: = false
 
+# what a bug report needs, in godot.log
+static func _report() -> void:
+	var lite: = preload("res://game/mods/perf_lite.gd")
+	var on: Array = []
+	for k in lite.KEYS:
+		if lite.enabled(k):
+			on.append(k)
+	print("[lag fixer] build %s | %s %s | %s | gpu: %s (%s) api %s | render thread model %s | args %s | light stages %s" % [
+		preload("res://game/mods/perf_cache.gd").BUILD,
+		OS.get_name(), OS.get_version(),
+		RenderingServer.get_current_rendering_driver_name(),
+		RenderingServer.get_video_adapter_name(), RenderingServer.get_video_adapter_vendor(),
+		RenderingServer.get_video_adapter_api_version(),
+		str(ProjectSettings.get_setting("rendering/driver/threads/thread_model", "?")),
+		str(OS.get_cmdline_args()), str(on)])
+
 static func start() -> void:
 	if _started:
 		return
 	_started = true
+	_report()
 	# scenes first: the title is waited on as soon as the splash ends, and the
 	# worker pool serves requests in order
 	var paths: Array = SCENES.duplicate()

@@ -32,8 +32,7 @@ def main():
     shutil.rmtree(out, ignore_errors=True)
     os.makedirs(os.path.join(out, "tools"))
     shutil.copy2(os.path.join(build, "dist", "JV_Optim.exe"), out)
-    for f in os.listdir(os.path.join(HERE, "package")):
-        shutil.copy2(os.path.join(HERE, "package", f), out)
+    shutil.copytree(os.path.join(HERE, "package"), out, dirs_exist_ok=True)
     shutil.copytree(os.path.join(HERE, "src", "tools", "mod_files"), os.path.join(out, "tools", "mod_files"))
     shutil.copytree(a.gdre, os.path.join(out, "tools", "gdre"))
     zip_path = shutil.make_archive(os.path.join(HERE, "release", NAME), "zip",

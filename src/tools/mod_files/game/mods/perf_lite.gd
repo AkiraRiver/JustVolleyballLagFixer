@@ -1,6 +1,6 @@
 extends RefCounted
 
-# [mod/perf] lighter stages, set in (REGLAGES.bat writes it), saved in
+# [lag fixer] lighter stages, set with LIGHT_STAGES.bat, saved in
 # user://jv_mod_lite.cfg. Applies when a stage is built (next match or menu
 # court), never to gameplay: collisions, lines and the ball are untouched.
 #   crowd     background people (beach walkers/sitters, arena and gym stands)

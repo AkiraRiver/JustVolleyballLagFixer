@@ -1,6 +1,6 @@
 extends RefCounted
 
-# [mod/perf] disk caches for work the game redoes on every launch:
+# [lag fixer] disk caches for work the game redoes on every launch:
 # hair fitted to the head mesh (ModelRig._fit_hair) and the face-art centres
 # read back from the GPU (FaceParts). One folder per game build, so an update
 # never reuses stale data; older folders are deleted. The demo and the full
