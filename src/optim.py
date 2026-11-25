@@ -152,6 +152,48 @@ def compat_layers():
     return out
 
 
+LAYERS_KEY = r"Software\Microsoft\Windows NT\CurrentVersion\AppCompatFlags\Layers"
+
+
+def copy_compat_mode(src_exe, out_exe):
+    """If the Steam exe runs in a compatibility mode (right-click > Properties >
+    Compatibility), give our copy the same one. Windows keeps it per exe path,
+    so it also survives the next rebuilds."""
+    try:
+        import winreg
+    except ImportError:
+        return
+    want = os.path.normcase(os.path.abspath(src_exe))
+    value = None
+    for hive in (winreg.HKEY_CURRENT_USER, winreg.HKEY_LOCAL_MACHINE):  # per user wins
+        try:
+            with winreg.OpenKey(hive, LAYERS_KEY) as k:
+                i = 0
+                while True:
+                    try:
+                        exe, val, _ = winreg.EnumValue(k, i)
+                    except OSError:
+                        break
+                    i += 1
+                    if os.path.normcase(os.path.abspath(exe)) == want and value is None:
+                        value = val
+        except OSError:
+            pass
+    try:
+        with winreg.CreateKeyEx(winreg.HKEY_CURRENT_USER, LAYERS_KEY, 0, winreg.KEY_SET_VALUE) as k:
+            if value:
+                winreg.SetValueEx(k, os.path.abspath(out_exe), 0, winreg.REG_SZ, value)
+                print("  compatibility mode copied from the Steam game: " + value)
+            else:
+                try:
+                    winreg.DeleteValue(k, os.path.abspath(out_exe))  # Steam game has none any more
+                    log_only("compatibility mode removed from our copy (the Steam game has none)")
+                except OSError:
+                    pass
+    except OSError as e:
+        log_only("could not set the compatibility mode: %s" % e)
+
+
 def dump_work_logs():
     for name in ("recover.log", "compile.log", "patch.log"):
         p = os.path.join(m.WORK, name)
@@ -241,7 +283,7 @@ def build(edition, steam_dir):
     play_args = game_args(opts)
     log_only("steam launch options: %s -> passed to our copy: %s" % (opts or "(none)", play_args or "(none)"))
     for c in compat_layers():
-        log_only("WARNING compatibility mode: " + c)
+        log_only("compatibility mode: " + c)
     sha = m.file_sha(src_exe) + (m.file_sha(src_pck)[:16] if src_pck else "")
     stamp = "%s %s" % (sha, files_version())
     m.BUILD_ID = hashlib.sha256(stamp.encode()).hexdigest()[:16]
@@ -313,6 +355,7 @@ def build(edition, steam_dir):
         fh.write(app_id)
     m.GAME_DIR = game_dir
     write_launch_args(game_dir, play_args)
+    copy_compat_mode(src_exe, out_exe)
     with open(stamp_file, "w") as fh:
         fh.write(stamp)
     shutil.rmtree(m.WORK, ignore_errors=True)

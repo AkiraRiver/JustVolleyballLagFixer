@@ -23,6 +23,8 @@ Used from the next stage load.
 Back to the normal game: launch it from Steam, or delete this folder.
 Crashes or glitches: double-click SAFE_MODE.bat (turns off multithreaded
 rendering and rebuilds), then play again with LAUNCH_GAME.bat.
+Game only works in compatibility mode? Set it on the Steam game's
+volleyball.exe, then run JV_Optim.exe again: it copies the same setting.
 Still broken? Run MAKE_REPORT.bat and send the JV_report.zip it puts on
 your Desktop (it contains your game logs).
 Do not run the Steam game and this copy at the same time (online breaks).
